@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "963319408069",
+    "firebase_url": "https://onehelp-29947.firebaseio.com",
+    "project_id": "onehelp-29947",
+    "storage_bucket": "onehelp-29947.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963319408069:android:49d86d0f53deb850f957ac",
+        "android_client_info": {
+          "package_name": "com.example.oneHelp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963319408069-i9f1efhecr41it9ff1vtgfjs3tjcme77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW89VdOOuK0lI5b1S9uf1s066Xbus-pDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963319408069-i9f1efhecr41it9ff1vtgfjs3tjcme77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
