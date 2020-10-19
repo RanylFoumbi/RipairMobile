@@ -24,7 +24,8 @@ class TechShimmer extends StatelessWidget{
                 return GestureDetector(
                   onTap: (){},
                   child: Container(
-                      margin: EdgeInsets.only(top: 8,bottom: 2,left: 12,right: 5),
+                      margin: EdgeInsets.only(top: 5,bottom: 2,left: 12,right: 5),
+                      padding: EdgeInsets.only(bottom: 2.6),
                       decoration: BoxDecoration(
                           color: WHITE_COLOR,
                           borderRadius: BorderRadius.circular(15),
@@ -78,7 +79,7 @@ class TechShimmer extends StatelessWidget{
                                 )
                             ),
 
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 3),
 
                             Container(
                               width: screenSize.width/5.2,
@@ -97,7 +98,7 @@ class TechShimmer extends StatelessWidget{
                                   )
                             ),
 
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 5),
 
 
                             Container(
@@ -120,7 +121,7 @@ class TechShimmer extends StatelessWidget{
                                               color: Colors.grey[100],
                                             ),
                                             alignment: Alignment.centerLeft,
-                                            height: 12,
+                                            height: 10,
                                           ),
                                         )
                                     ),
@@ -139,13 +140,11 @@ class TechShimmer extends StatelessWidget{
                                                 color: Colors.grey[100],
                                             ),
                                             alignment: Alignment.centerLeft,
-                                            height: 13,
+                                            height: 10,
                                             width: screenSize.width/8.2,
                                           ),
                                         )
                                     )
-
-
                                   ],
                                 )
                             ),

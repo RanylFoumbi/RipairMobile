@@ -13,6 +13,7 @@ import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:oneHelp/ui/globals/stringExtension.dart';
 
 class TechnicianDetails extends StatefulWidget{
 
@@ -137,8 +138,6 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
             "techProf": widget.professions[0]
           };
           Timer.periodic(new Duration(seconds: 1), (timer) {
-
-                print("5555555555555555555555555");
             for(final call in FlutterPhoneState.activeCalls){
               for (final event in call.events){
                 print(event.status);
@@ -169,7 +168,7 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
 
  void _sendMail() async {
     // Android and iOS
-    var uri ='mailto:ranylfoumbi@gmail.com?subject=Plainte contre le ${widget.professions[0]['label']},'  ' ${widget.lastname} '  ' ${widget.name}s&body=Hello Ripair Assistance';
+    var uri ='mailto:ranylfoumbi@gmail.com?subject=Plainte contre le ${widget.professions[0]},'  ' ${widget.lastname} '  ' ${widget.name}s&body=Hello Ripair Assistance';
     if (await canLaunch(uri)) {
       await launch(uri);
     } else {
@@ -184,22 +183,20 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
       barrierDismissible: true, // set to false if you want to force a rating
       builder: (context) {
         return RatingDialog(
-          icon: Icon(FontAwesome5.star,size: 40,color: BLACK_DEGRADE_COLOR,), // set your own image/icon widget
+          icon: Icon(FontAwesome5.user_circle,size: 40,color: BLACK_DEGRADE_COLOR,), // set your own image/icon widget
           title: "Appréciez",
           description: "Appréciez à sa juste valeur le travail effectué par ${widget.name}",
           submitButton: "Voter",
-          alternativeButton: "Contactez nous.", // optional
-          positiveComment: "Travail impeccable!", // optional
-          negativeComment: "Travail insatisfaisant.!", // optional
-          accentColor: YELLOW_COLOR, // optional
+          alternativeButton: "Contactez nous.", 
+          positiveComment: "Travail impeccable!", 
+          negativeComment: "Travail insatisfaisant.!", 
+          accentColor: YELLOW_COLOR,
           onSubmitPressed: (int rating) {
             print("onSubmitPressed: rating = $rating");
             _rateTech(widget.id, rating);
-            // TODO: open the app's page on Google Play / Apple App Store
           },
           onAlternativePressed: () {
             print("onAlternativePressed: do something");
-            // TODO: maybe you want the user to contact you instead of rating a bad review
             _sendMail();
           },
         );
@@ -212,7 +209,7 @@ Widget _displayMulti(listItems){
         children: <Widget>[]
     );
     for(var item in listItems){
-      list.children.add(Text(item['label'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold))) ;
+      list.children.add(Text(item,style: TextStyle(fontSize: 14.5,fontWeight: FontWeight.bold))) ;
     }
     return list;
   }
@@ -233,7 +230,7 @@ Widget _displayMulti(listItems){
                     children: <Widget>[
                       Container(
                         width: double.infinity,
-                        height: MediaQuery.of(context).size.height / 2,
+                        height: 400,
                         child: Stack(
                           children: <Widget>[
                             Positioned(
@@ -258,13 +255,13 @@ Widget _displayMulti(listItems){
                                         ),
                                         child: Image.network(widget.techPic,
                                           width: MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context).size.height / 2,
+                                          height: 350,
                                           fit: BoxFit.cover
                                         ),
                                       ),
 
                                     IconButton(
-                                      padding: EdgeInsets.only(top: 55,left: 15),
+                                      padding: EdgeInsets.only(top: 45,left: 15),
                                       icon: Icon(Icons.arrow_back_ios,color: WHITE_COLOR),
                                       onPressed: ()=>Navigator.of(context).pop(),
                                       iconSize: 30.0,
@@ -276,42 +273,44 @@ Widget _displayMulti(listItems){
                             ),
 
                             Positioned(
-                              top:260,
+                              top:295,
                               left: 20,
                               right: 20,
                               bottom: 0,
                               child: Card(
-                                elevation: 5.0,
+                                // elevation: 5.0,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25.0)
+                                  borderRadius: BorderRadius.circular(20.0)
                                 ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(13.0),
+                                child: Container(
+                                  height: 150,
+                                  padding: EdgeInsets.all(5),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text(widget.name +" "+ widget.lastname, style: TextStyle(fontSize: 22),)
+                                          Text(widget.name +" "+ widget.lastname,
+                                           style: TextStyle(fontSize: 20),
+                                           maxLines: 1,
+                                           overflow: TextOverflow.ellipsis,
+                                          )
                                         ],
                                       ),
 
-                                      Divider(),
+                                      Divider(height: 1,),
 
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: <Widget>[
-                                          Container(
-
-                                            child: Interaction(widget.nbrOfCall.toString(), 'Appels reçus'),
-                                          ),
+                                          Interaction(widget.nbrOfCall.toString(), 'Appels reçus'),
 
                                           Column(
                                             children: <Widget>[
                                               SmoothStarRating(
                                                 rating: double.parse(widget.numberOfStars),
-                                                isReadOnly: false,
+                                                isReadOnly: true,
                                                 size: 13.5,
                                                 filledIconData: Icons.star,
                                                 halfFilledIconData: Icons.star_half,
@@ -325,7 +324,7 @@ Widget _displayMulti(listItems){
 
                                               Text(widget.numberOfStars.toString().length >= 4 ? widget.numberOfStars.toString().substring(0, 3) : widget.numberOfStars.toString(),
                                                 style: TextStyle(
-                                                  fontSize: 20,
+                                                  fontSize: 18,
                                                   fontWeight: FontWeight.w600,
                                                   decoration: TextDecoration.none,
                                                   color: Colors.black,
@@ -335,9 +334,7 @@ Widget _displayMulti(listItems){
                                             ],
                                           ),
 
-                                          Container(
-                                            child: Interaction(widget.nbrOfComment.toString(), 'Commentaires'),
-                                          ),
+                                          Interaction(widget.nbrOfComment.toString(), 'Commentaires'),
 
                                         ],
                                       ),
@@ -365,15 +362,15 @@ Widget _displayMulti(listItems){
                                       SizedBox(width: 10),
 
                                       Expanded(
-                                          child: Text(widget.town+ " , "+ widget.quarter,
-                                            style: TextStyle(fontSize: 15),
+                                          child: Text(widget.town.capitalize()+ " , "+ widget.quarter.capitalize(),
+                                            style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                                           )
                                       )
                                     ],
                                   ),
                                 ),
 
-//
+                                Spacer(flex: 2,),
 
                                 Container(
                                     width: MediaQuery.of(context).size.width/2.5,
@@ -398,7 +395,7 @@ Widget _displayMulti(listItems){
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 InkWell(
-                                  borderRadius: BorderRadius.circular(15),
+                                  borderRadius: BorderRadius.circular(10),
                                   child: Container(
                                     width: 60,
                                     height: 40,
@@ -408,7 +405,7 @@ Widget _displayMulti(listItems){
                                     ),
                                     decoration: BoxDecoration(
                                       color: BLUE_COLOR,
-                                      borderRadius: BorderRadius.circular(15),
+                                      borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
                                             offset: Offset(0, 3),
@@ -482,7 +479,7 @@ Widget _displayMulti(listItems){
                               ],
                             ),
 
-                            SizedBox(height: 10,),
+                            SizedBox(height: 23,),
 
                             Row(
                               children: <Widget>[
@@ -492,20 +489,29 @@ Widget _displayMulti(listItems){
                             ),
 
                             SizedBox(height: 10,),
-
                             Container(
+                              height: 200,
                               margin: EdgeInsets.only(right: 20),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
+                                  borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: BLACK_DEGRADE_COLOR.withOpacity(0.2))
                                 ),
                                 width: MediaQuery.of(context).size.width / 1.1,
                                 padding: EdgeInsets.all(10),
-                                child: Text(widget.description,
-//                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(fontSize: 14.0,),
+                                child: new Scrollbar(
+                                    child:SingleChildScrollView(
+                                        child: Column(
+                                            children: [
+                                              Text(widget.description,
+                                                style: TextStyle(fontSize: 14.0,),
+                                                textAlign: TextAlign.justify,
+                                              )
+                                            ],
+                                    ),
+                                  )
                                 )
-                            ),
+                            )
+
 
                           ],
                         )

@@ -233,7 +233,7 @@ class _HomeState extends State<Home> {
                   );
                 },
                 child: Container(
-                    margin: EdgeInsets.only(top: 8,bottom: 2,left: 12,right: 5),
+                    margin: EdgeInsets.only(top: 4,bottom: 2,left: 12,right: 5),
                     decoration: BoxDecoration(
                         color: WHITE_COLOR,
                         borderRadius: BorderRadius.circular(15),
@@ -278,9 +278,8 @@ class _HomeState extends State<Home> {
 
                           SizedBox(
                             width: MediaQuery.of(context).size.width/4.2,
-                            child: Text(
-                              techSnap.data[index]['name'] +" "+ techSnap.data[index]['lastname'],
-                              maxLines: 2,
+                            child: Text(techSnap.data[index]['name']+" " +techSnap.data[index]['lastname'],
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
                               style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w400, fontSize: 12),
@@ -292,7 +291,7 @@ class _HomeState extends State<Home> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width/4.2,
                             child: Text(
-                              techSnap.data[index]['professions'][0]['label'],
+                              techSnap.data[index]['professions'][0],
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
@@ -309,7 +308,7 @@ class _HomeState extends State<Home> {
 
                                   Container(
                                       width: 35,
-                                      height: 12,
+                                      height: 15,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         mainAxisSize: MainAxisSize.min,
@@ -322,13 +321,12 @@ class _HomeState extends State<Home> {
                                               style: new TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: BLACK_COLOR,
-                                                fontSize: 13.5,
+                                                fontSize: 13,
                                               )
                                           ),
                                         ],
                                       )
                                   ),
-
 
                                   Spacer(),
 
@@ -343,14 +341,14 @@ class _HomeState extends State<Home> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
 
-                                          Icon(Icons.star, color: BLACK_DEGRADE_COLOR,size: 16,),
+                                          Icon(Icons.star, color: BLACK_DEGRADE_COLOR,size: 15,),
 
                                           Text(nbrOfStar.toString().length >= 4 ? nbrOfStar.toString().substring(0, 3) : nbrOfStar.toString(),
                                               textAlign: TextAlign.center,
                                               style: new TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: BLACK_DEGRADE_COLOR,
-                                                fontSize: 14.5,
+                                                fontSize: 13.5,
                                               )
                                           ),
                                         ],
@@ -413,9 +411,7 @@ class _HomeState extends State<Home> {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             children: [
-
               Divider(color: WHITE_COLOR,),
-
               Container(
                 padding: EdgeInsets.only(right: 20,left: 16,top: 10),
 //                height: 40,
@@ -464,7 +460,7 @@ class _HomeState extends State<Home> {
               ),
 
               SizedBox(
-                height: _screenSize.height/4.3,
+                height: 170,
                 child: _getCourseList(_screenSize),
               ),
               Container(
@@ -495,14 +491,13 @@ class _HomeState extends State<Home> {
               ),
 
               SizedBox(
-                height: _screenSize.height/4,
+                height: 180,
                 child: _getTechnician(location),
               ),
 
-
               Container(
                 padding: EdgeInsets.only(right: 20,left: 16),
-                margin: EdgeInsets.only(top: 12,bottom: 5),
+                margin: EdgeInsets.only(top: 10,bottom: 5),
                 height: 40,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -528,11 +523,9 @@ class _HomeState extends State<Home> {
               ),
 
               SizedBox(
-                height: _screenSize.height/4,
+                height: 180,
                 child: _getTechnician('recent'),
               ),
-
-
             ],
           ),
         );

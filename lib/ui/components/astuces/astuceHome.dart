@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:oneHelp/apiCall/astuce.dart';
 import 'package:oneHelp/models/astuce.dart';
 import 'package:oneHelp/ui/components/astuces/singleAstuce.dart';

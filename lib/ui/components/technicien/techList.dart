@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:oneHelp/apiCall/domain.dart';
 import 'package:oneHelp/apiCall/user.dart';
 import 'package:oneHelp/models/domain.dart';
-import 'package:oneHelp/models/user.dart';
 import 'package:oneHelp/ui/globals/shimmers/searchTech.dart';
 import 'package:oneHelp/ui/globals/shimmers/tagbutton.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
@@ -161,8 +159,9 @@ class _TechListState extends State<TechList> {
                                         childAspectRatio: MediaQuery.of(context).size.width /
                                             (MediaQuery.of(context).size.height / 1.35),
                                          ),
-                                        padding: EdgeInsets.only(right: 5,top: 5),
+                                        // padding: EdgeInsets.only(right: 5,top: 5),
                                         itemCount: _techList.length,
+                                        padding: EdgeInsets.only(bottom: 8),
                                         itemBuilder: (context, index) {
                                           var nbrOfStar = _techList[index]['rating'].length == 0 ? 0 : (_techList[index]['rating'].reduce((curr, next) => curr + next)) / _techList[index]['rating'].length;
                                       return GestureDetector(
@@ -188,7 +187,7 @@ class _TechListState extends State<TechList> {
                                                 );
                                         },
                                         child: Container(
-                                            margin: EdgeInsets.only(top: 8,bottom: 2,left: 12,right: 5),
+                                            margin: EdgeInsets.only(top: 8,bottom: 4,left: 12,right: 5),
                                             decoration: BoxDecoration(
                                                 color: WHITE_COLOR,
                                                 borderRadius: BorderRadius.circular(15),
@@ -229,13 +228,14 @@ class _TechListState extends State<TechList> {
                                                       )
                                                   ),
 
-                                                  Divider(color: WHITE_COLOR,),
+                                                  Divider(color: WHITE_COLOR,height: 5,),
 
                                                   SizedBox(
+                                                    height: 13,
                                                     width: screenSize.width/4.2,
                                                     child: Text(
                                                       _techList[index]['name'] +" "+ _techList[index]['lastname'],
-                                                      maxLines: 2,
+                                                      maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                       softWrap: true,
                                                       style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w500, fontSize: 12),
@@ -245,19 +245,18 @@ class _TechListState extends State<TechList> {
                                                   const SizedBox(height: 3),
 
                                                   SizedBox(
+                                                    height: 13,
                                                     width: screenSize.width/4.2,
                                                     child: Row(
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
                                                         Text(
-                                                          _techList[index]['professions'][0]['label'],
+                                                          _techList[index]['professions'][0],
                                                           maxLines: 1,
                                                           overflow: TextOverflow.ellipsis,
                                                           softWrap: true,
                                                           style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w300, fontSize: 12),
                                                         ),
-
-
                                                       ],
                                                     )
                                                   ),
@@ -265,13 +264,15 @@ class _TechListState extends State<TechList> {
                                                   const SizedBox(height: 3),
 
                                                   SizedBox(
+                                                    height: 20,
                                                       width: screenSize.width/4.2,
                                                       child: Row(
                                                         children: <Widget>[
 
                                                           Container(
                                                               width: 35,
-                                                              height: 12,
+                                                              height: 15,
+                                                              margin: EdgeInsets.only(bottom: 3),
                                                               child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                                 mainAxisSize: MainAxisSize.min,
@@ -290,7 +291,6 @@ class _TechListState extends State<TechList> {
                                                                 ],
                                                               )
                                                           ),
-
 
                                                           Spacer(),
 
@@ -318,8 +318,6 @@ class _TechListState extends State<TechList> {
                                                                 ],
                                                               )
                                                           )
-
-
                                                         ],
                                                       )
                                                   ),
@@ -494,7 +492,8 @@ class _TechListState extends State<TechList> {
 //      body: ,
       body: SmartRefresher(
         enablePullDown: true,
-        enablePullUp: true,
+        enablePullUp: false,
+        enableTwoLevel: true,
         header: WaterDropMaterialHeader(
           backgroundColor: BLUE_COLOR,
           distance: 60,

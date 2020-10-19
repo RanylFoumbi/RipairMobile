@@ -93,7 +93,7 @@ class SingleAstuce extends StatelessWidget {
                                                     children: <Widget>[
                                                       SmoothStarRating(
                                                         rating: double.parse(star),
-                                                        isReadOnly: false,
+                                                        isReadOnly: true,
                                                         size: 13.5,
                                                         filledIconData: Icons.star,
                                                         halfFilledIconData: Icons.star_half,

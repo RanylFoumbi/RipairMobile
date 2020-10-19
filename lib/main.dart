@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'ui/components/Home/home.dart';
-import 'ui/components/bigContainer/bigContainer.dart';
 import 'ui/globals/splashScreen.dart';
 //import 'package:animated_splash/animated_splash.dart';
 
@@ -22,6 +21,7 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
           title: 'Ripair',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
