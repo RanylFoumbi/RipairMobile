@@ -4,6 +4,32 @@ import 'package:oneHelp/utilities/config/server.dart';
 
 class UserApi{
 
+
+
+ Future<http.Response> signup(String name, String phone, String email, String password) async{
+    var url = baseUrl + '/api/v1/auth/register';
+    var response = await http.post(url, 
+    body: {
+      'name': name, 
+      'phone': phone, 
+      'email': email, 
+      'password': password
+    },
+    headers: {"X-Requested-With": "XMLHttpRequest"});
+    return response;
+  }
+
+  // Login and Get the informations of the logged user
+  Future<http.Response> login(String email, String password) async{
+    var url = baseUrl + '/api/user/login';
+    var response = await http.post(url, 
+    body: {
+      'password': password, 
+      'email': email
+    },);
+    return response;
+  }
+
   Future<http.Response> verifyIfUserExist(phone)async{
     return await http.get((baseUrl + "/api/technician/login/${phone}"),headers: { 'Content-type': 'application/json',"Accept-Charset": "utf-8"});
   }

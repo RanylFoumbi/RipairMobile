@@ -19,16 +19,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  country_code_picker: ^1.5.0
   connectivity: ^0.4.9+2
   fluttertoast: ^7.0.4
-  firebase_auth: ^0.18.0+1
   http: ^0.12.2
-  provider: any
   flutter_icons: ^1.1.0
   smooth_star_rating: ^1.1.1
   flutter_spinkit: ^4.1.2+1
-#  intl: ^0.16.1
   persistent_bottom_nav_bar: ^2.0.5
   rating_dialog: ^1.0.0
 #  animated_splash: ^1.0.0
@@ -44,6 +40,8 @@ dependencies:
   localstorage: ^3.0.2+5
   flutter_swiper: ^1.1.6
   pull_to_refresh: ^1.6.2
+  rflutter_alert: ^1.0.3
+  shared_preferences: ^0.5.6+1
 
 dev_dependencies:
   flutter_test:

@@ -194,7 +194,6 @@ class _AstuceDetailsState extends State<AstuceDetails>{
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-
                             Text("Noter:",
                               style: TextStyle(
                                   color: BLACK_DEGRADE_COLOR,
@@ -229,7 +228,6 @@ class _AstuceDetailsState extends State<AstuceDetails>{
                   ],
                 )
             ),
-
           ],
         ),
       ),

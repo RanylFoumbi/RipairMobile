@@ -1,21 +1,21 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:oneHelp/models/user.dart';
-import 'package:oneHelp/ui/components/auth/signup.dart';
+import 'package:oneHelp/ui/components/auth/login.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:oneHelp/apiCall/user.dart';
 import 'dart:convert';
-import '../../../apiCall/user.dart';
 
-class Login extends StatefulWidget {
+class Signup extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _SignupState createState() => _SignupState();
 }
 
-class _LoginState extends State<Login> {
+class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -29,10 +29,11 @@ class _LoginState extends State<Login> {
   }
 
   String _validateEmail(String value) {
-    Pattern pattern =r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
-      return "Email incorecte";
+      return "Adresse Email incorecte";
     else
       return null;
   }
@@ -47,70 +48,24 @@ class _LoginState extends State<Login> {
     Navigator.of(context).pop();
   }
 
-  // Save persistant data on disk
-  savePreference(String accessToken, String userData) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("token", accessToken);
-    await prefs.setString("user", userData);
-  }
 
   // Called when user submit the form
-  void _handleSubmit()async {
+  void _handleSubmit() {
     setState(() { _loading = true; });
     String email = emailController.text;
     String password = passwordController.text;
-    UserApi().login(email, password)
-    .then((response) {
-      if(response.statusCode == 200) {
-        final responseJson = json.decode(response.body);
-        String accessToken = responseJson["token"];
-        String user = jsonEncode(responseJson["user"]);
-        //   // Store user data and token locally
-          savePreference(accessToken, user);
-        _redirect();
-      } else if(response.statusCode == 401) {
-        _showDialog("Email ou Mot de passe incorect.");
-      }
-      setState(() { _loading = false; });
-      _showDialog(json.decode(response.body)["msg"]);
-    })
-    .catchError((onError) {
-      setState(() {_loading = false;});
-      _showDialog("Verifiez votre connexion internet. Puis réessayer.");
-    });
+   
   }
 
-  void _showDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Auth Error"),
-          content: new Text(message),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Fermer"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+   Future loginDialog(BuildContext context) async {
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return Login();
+        }
     );
   }
-
-  Future signupDialog (BuildContext context) async {
-      await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context){
-            return Signup();
-          }
-      );
-    }
 
 
   @override
@@ -118,8 +73,8 @@ class _LoginState extends State<Login> {
     return  SimpleDialog(
         backgroundColor: Colors.white,
         title: Container(
-          height: 80.0,
-          width: 80.0,
+          height: 70.0,
+          width: 70.0,
            decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
@@ -152,6 +107,69 @@ class _LoginState extends State<Login> {
           child: Column(
             children: <Widget>[
 
+               Container(
+                padding: EdgeInsets.all(6),
+                margin: EdgeInsets.only(left: 12, right: 12),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey[200]),
+                    )
+                ),
+                child: TextFormField(
+                  controller: nameController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: "Nom",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14),
+                    prefixIcon: Icon(
+                      Icons.account_circle,
+                      color: BLUE_COLOR,
+                    ),
+                  ),
+                  validator: (String value){
+                    if(value.length == 0)
+                     return "Nom requis";
+                    else
+                     return null;
+                  }
+                ),
+              ),
+
+
+              Container(
+                padding: EdgeInsets.all(6),
+                margin: EdgeInsets.only(left: 12, right: 12),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey[200]),
+                    )
+                ),
+                child: TextFormField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Téléphone",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14),
+                    prefixIcon: Icon(
+                      Icons.phone,
+                      color: BLUE_COLOR,
+                    ),
+                  ),
+                  validator: (String value){
+                    if(value.length == 0)
+                     return "Téléphone requis";
+                    if(value.length < 8)
+                     return "Téléphone , Min 8 caracteres"; 
+                    else
+                     return null;
+                  }
+                ),
+              ),
+
               Container(
                 padding: EdgeInsets.all(6),
                 margin: EdgeInsets.only(left: 12, right: 12),
@@ -162,14 +180,14 @@ class _LoginState extends State<Login> {
                 ),
                 child: TextFormField(
                   controller: emailController,
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: "Email",
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(top: 14),
                     prefixIcon: Icon(
-                      Icons.account_circle,
+                      Icons.email,
                       color: BLUE_COLOR,
                     ),
                   ),
@@ -217,30 +235,26 @@ class _LoginState extends State<Login> {
               
               SizedBox(height: 15),
               DialogButton(
-                color: !_loading ? BLUE_COLOR : Colors.grey,
+                color: BLUE_COLOR,
                   onPressed: () {
                      _formKey.currentState.validate();
                         if (_isValidForm()) {
-                         _loading ? null :  _handleSubmit();
-                         
+                          // _handleSubmit();
                         }
                   },
-                  child:!_loading ? 
-                  Text(
-                    "Se connecter",
+                  child: Text(
+                    "Créer un compte",
                     style: TextStyle(color: Colors.white, fontSize: 20),
-                  )
-                  :
-                  SpinKitWave(color: WHITE_COLOR, size: 20,),
+                  ),
                 ),
 
               FlatButton(
-                onPressed: (){
+                 onPressed: (){
                   Navigator.of(context).pop(true);
-                  signupDialog(context);
+                  loginDialog(context);
                 }, 
                 child: Text(
-                    "Je n'ai pas de compte? Créer un compte.",
+                    "Se connecter.",
                     style: TextStyle(color: BLUE_COLOR, fontSize: 10),
                   ),
               )  

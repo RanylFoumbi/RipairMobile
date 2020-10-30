@@ -4,12 +4,14 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:oneHelp/apiCall/domain.dart';
 import 'package:oneHelp/apiCall/user.dart';
 import 'package:oneHelp/models/domain.dart';
+import 'package:oneHelp/ui/components/auth/login.dart';
 import 'package:oneHelp/ui/globals/shimmers/searchTech.dart';
 import 'package:oneHelp/ui/globals/shimmers/tagbutton.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 
 import 'package:oneHelp/utilities/permission/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'techDetail.dart';
 
@@ -390,59 +392,14 @@ class _TechListState extends State<TechList> {
                               );
   }
 
+   
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     /*get the size of the screen*/
     Size _screenSize = MediaQuery.of(context).size;
-
-    final searchInput = new Container(
-      height: 38,
-      margin: EdgeInsets.only(left: 13,right: 13),
-      decoration: BoxDecoration(
-          color: BLACK_DEGRADE_COLOR_SEARCH,
-          borderRadius: BorderRadius.circular(15.0),
-          boxShadow: [
-            new BoxShadow(
-              color: Color(0xff707070).withOpacity(0.2),
-              offset: Offset(0, 2),
-            )
-          ]
-      ),
-      child: TextField(
-        onChanged: (query){
-          _fetchTechnician(query, _domainForSearch);
-        },
-        decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(color: BLACK_DEGRADE_COLOR_SEARCH)
-            ),
-            disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(color: BLACK_DEGRADE_COLOR_SEARCH)
-            ),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(color: BLACK_DEGRADE_COLOR_SEARCH)
-            ),
-            prefixIcon: IconButton(
-              icon: Icon(FontAwesome.search,color: Color(0xff707070),size: 15,),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            ),
-            contentPadding: EdgeInsets.only(left: 25),
-            hintText: "Essayez 'Yaoundé'",
-            hintStyle: TextStyle(fontStyle: FontStyle.normal),
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: BLACK_DEGRADE_COLOR_SEARCH,style: BorderStyle.none),
-              borderRadius: BorderRadius.circular(10.0),
-            )
-        ),
-      ),
-    );
-
+  
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar:PreferredSize(

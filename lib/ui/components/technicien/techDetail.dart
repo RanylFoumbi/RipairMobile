@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -7,10 +8,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:oneHelp/apiCall/comment.dart';
 import 'package:oneHelp/apiCall/user.dart';
+import 'package:oneHelp/models/user.dart';
+import 'package:oneHelp/ui/components/auth/login.dart';
 import 'package:oneHelp/ui/globals/toast.dart';
 import 'package:oneHelp/utilities/connectivity.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:rating_dialog/rating_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:oneHelp/ui/globals/stringExtension.dart';
@@ -71,8 +75,12 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
 
   }
 
-  void _isLogged(){
-
+  Future<bool> _isLogged() async{
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+     if(prefs.getString('user') != null)
+      return true;
+     else
+      return false; 
   }
 
   Future _postComment(comment) async {
@@ -98,7 +106,7 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
       }
   }
 
-  void _validateCommentField(){
+  void _validateCommentField()async{
     if(_commentController.text == ''){
       toast("Remplissez le champs svp!",Toast.LENGTH_LONG,ToastGravity.BOTTOM,Colors.red,Colors.white,15);
     }else{
@@ -107,7 +115,11 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
         "authorId": "025698745",
         "technicianId": widget.id
       };
-      _postComment(comment);
+      if(await _isLogged())
+        _postComment(comment);
+      else
+        loginDialog(context);
+      
     }
   }
 
@@ -122,17 +134,20 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
   }
 
   void _initiateCall() async{
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+     final user =  jsonDecode(  prefs.getString("user")); ;
+     print(user['id']);
     if(await checkInternet() == true){
           setState(() {
             FlutterPhoneState.startPhoneCall(widget.phone[0]);
             FlutterPhoneState.activeCalls;
           });
           var callInfo ={
-            "clientId": "2152584",
+            "clientId": user['id'],
             "techId": widget.id,
-            "clientName": "Josua osih",
-            "clientPhone": "6587925674",
-            "clientPic": "",
+            "clientName": user['name'] != null ? user['name'] : user['email'],
+            "clientPhone": user['phone'] != null ? user['phone'] : "---",
+            "clientPic": "---",
             "techName": widget.name + " "+ widget.lastname,
             "techPhone": widget.phone[0],
             "techProf": widget.professions[0]
@@ -176,6 +191,15 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
     }
   }
 
+ Future loginDialog(BuildContext context) async {
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return Login();
+        }
+    );
+  }
   void _showRatingDialog() {
   // We use the built in showDialog function to show our Rating Dialog
   showDialog(
@@ -416,8 +440,11 @@ Widget _displayMulti(listItems){
                                     child: Icon(FontAwesome.phone,color: WHITE_COLOR,),
                                     alignment: Alignment.center,
                                   ),
-                                  onTap: (){
-                                    _initiateCall();
+                                  onTap: () async{
+                                    if(await _isLogged())
+                                       _initiateCall();
+                                    else
+                                      loginDialog(context);
                                   },
                                 )
                               ],
@@ -471,7 +498,12 @@ Widget _displayMulti(listItems){
                                             ),
                                             alignment: Alignment.center,
                                           ),
-                                          onTap: _showRatingDialog,
+                                          onTap:()async{
+                                             if(await _isLogged())
+                                              _showRatingDialog();
+                                            else
+                                              loginDialog(context);
+                                          },
                                         )
                                       ],
                                     )
@@ -563,8 +595,8 @@ Widget _displayMulti(listItems){
                                                   controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
                                                 )
                                               :
-                                                IconButton(
-                                                  icon: Icon(
+                                               !(_commentController.text.length == 0)
+                                               ? IconButton(icon: Icon(
                                                     FontAwesome.send,
                                                     color: BLUE_COLOR,
                                                     size: 18,
@@ -572,7 +604,8 @@ Widget _displayMulti(listItems){
                                                   onPressed: () {
                                                     _validateCommentField();
                                                   },
-                                                ),
+                                                )
+                                                : Text(""),
                                   ],
                                 ),
                               ),
