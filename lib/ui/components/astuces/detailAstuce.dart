@@ -7,6 +7,7 @@ import 'package:oneHelp/models/astuce.dart';
 import 'package:oneHelp/utilities/connectivity.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class AstuceDetails extends StatefulWidget{
     const AstuceDetails( {Key key,
@@ -26,16 +27,27 @@ class _AstuceDetailsState extends State<AstuceDetails>{
 
 
   @override
+  void initState() {
+    super.initState();
+    timeago.setLocaleMessages('fr', timeago.FrMessages());
+  }
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return WillPopScope(
-      onWillPop: (){Navigator.of(context).pop();},
+      onWillPop: (){
+        Navigator.of(context).pop();
+      },
       child: Scaffold(
         appBar:  PreferredSize(
             child: Stack(
               children: <Widget>[
                 Container(
                   height: MediaQuery.of(context).size.height * 0.5,
+                  decoration: BoxDecoration(
+                      color: BLACK_DEGRADE_COLOR
+                  ),
                   child: new Swiper(
                     onTap: (index){
 //                      print(image);
@@ -55,15 +67,6 @@ class _AstuceDetailsState extends State<AstuceDetails>{
                     control: null,
                   )),
 
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  padding: EdgeInsets.all(40.0),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: BLACK_DEGRADE_COLOR
-                  ),
-                ),
-
 
                 Positioned(
                   left: 12.0,
@@ -78,7 +81,7 @@ class _AstuceDetailsState extends State<AstuceDetails>{
 
                 Positioned(
                     left: 20.0,
-                    top: MediaQuery.of(context).size.height / 2.8,
+                    top: MediaQuery.of(context).size.height / 2.9,
                     child: Container(
                       decoration: BoxDecoration(color: BLUE_COLOR,borderRadius: BorderRadius.circular(10)),
                       padding: EdgeInsets.all(8),
@@ -148,7 +151,30 @@ class _AstuceDetailsState extends State<AstuceDetails>{
             Container(
                 width: MediaQuery.of(context).size.width,
                 child: Text(
-                  '        '+widget.astuce.content,
+                  '        '+widget.astuce.firstContent,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(fontSize: 17.0,),
+                )
+            ),
+
+             new Divider(color: WHITE_COLOR),
+
+            Container(
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  '        '+widget.astuce.secondContent,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(fontSize: 17.0,),
+                )
+            ),
+
+             new Divider(color: WHITE_COLOR),
+
+            Container(
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  '        '+widget.astuce.thirdContent,
+                  textAlign: TextAlign.justify,
                   style: TextStyle(fontSize: 17.0,),
                 )
             ),
@@ -175,13 +201,13 @@ class _AstuceDetailsState extends State<AstuceDetails>{
                             ),
 
                             Text(
-                              widget.astuce.date.toString(),
+                              timeago.format(DateTime.parse(widget.astuce.date), locale: 'fr'),
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 10,
-                              ),
-                            ),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 10,
+                                ),
+                              )
                           ],
                         ),
                       ],

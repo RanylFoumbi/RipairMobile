@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:oneHelp/models/user.dart';
 import 'package:oneHelp/ui/components/auth/signup.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -72,7 +71,7 @@ class _LoginState extends State<Login> {
         _showDialog("Email ou Mot de passe incorect.");
       }
       setState(() { _loading = false; });
-      _showDialog(json.decode(response.body)["msg"]);
+      // _showDialog(json.decode(response.body)["msg"]);
     })
     .catchError((onError) {
       setState(() {_loading = false;});

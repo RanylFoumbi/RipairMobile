@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -22,7 +23,7 @@ class TechList extends StatefulWidget{
 }
 
 class _TechListState extends State<TechList> {
-  var location = PermissionHandler().locationStorage.getItem("location");
+  var location = removeDiacritics(PermissionHandler().locationStorage.getItem("location"));
   ScrollController _scrollController = new ScrollController();
   RefreshController _refreshController = RefreshController(initialRefresh: false);
   List _techList;
@@ -230,7 +231,7 @@ class _TechListState extends State<TechList> {
                                                       )
                                                   ),
 
-                                                  Divider(color: WHITE_COLOR,height: 5,),
+                                                  Divider(color: WHITE_COLOR,height: 8,),
 
                                                   SizedBox(
                                                     height: 13,
@@ -240,7 +241,7 @@ class _TechListState extends State<TechList> {
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                       softWrap: true,
-                                                      style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w500, fontSize: 12),
+                                                      style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w300, fontSize: 12),
                                                     ),
                                                   ),
 
@@ -248,19 +249,14 @@ class _TechListState extends State<TechList> {
 
                                                   SizedBox(
                                                     height: 13,
-                                                    width: screenSize.width/4.2,
-                                                    child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          _techList[index]['professions'][0],
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          softWrap: true,
-                                                          style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w300, fontSize: 12),
+                                                    width: MediaQuery.of(context).size.width/4.2,
+                                                    child: Text(
+                                                            _techList[index]['professions'][0],
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            softWrap: true,
+                                                            style: TextStyle(color: BLACK_COLOR, fontWeight: FontWeight.w300, fontSize: 12),
                                                         ),
-                                                      ],
-                                                    )
                                                   ),
 
                                                   const SizedBox(height: 3),
@@ -419,7 +415,8 @@ class _TechListState extends State<TechList> {
                           style: TextStyle(fontSize: 22,
                               fontFamily: "Ebrima",
                               fontWeight: FontWeight.bold,
-                              color: BLACK_COLOR),
+                              color: BLACK_COLOR
+                              ),
                         ),
                       )
                     ],
@@ -441,12 +438,11 @@ class _TechListState extends State<TechList> {
 
                     ],
                   ),
-                  preferredSize: null
+                  preferredSize:  Size.fromHeight(15.0),
               )
           ),
           preferredSize: Size.fromHeight(115.0),
       ),
-//      body: ,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -470,7 +466,4 @@ class _TechListState extends State<TechList> {
     super.dispose();
     _scrollController.dispose();
   }
-
-
-
 }

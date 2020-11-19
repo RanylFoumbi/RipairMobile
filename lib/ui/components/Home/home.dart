@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:oneHelp/apiCall/astuce.dart';
@@ -5,9 +6,11 @@ import 'package:oneHelp/apiCall/user.dart';
 import 'package:oneHelp/models/astuce.dart';
 import 'package:oneHelp/ui/components/astuces/detailAstuce.dart';
 import 'package:oneHelp/ui/components/technicien/techDetail.dart';
+import 'package:oneHelp/utilities/auth.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 
 import 'package:oneHelp/utilities/permission/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class Home extends StatefulWidget{
@@ -17,13 +20,14 @@ class Home extends StatefulWidget{
 }
 
 class _HomeState extends State<Home> {
-  var location = PermissionHandler().locationStorage.getItem("location");
+  var location = removeDiacritics(PermissionHandler().locationStorage.getItem("location"));
   ScrollController _scrollController = new ScrollController();
 
   @override
   void initState(){
     super.initState();
-
+print("5555555555555555555555");
+print(location);
   }
 
   Widget _getCourseList(screenSize){
@@ -91,7 +95,6 @@ class _HomeState extends State<Home> {
                                           borderRadius: BorderRadius.circular(15),
                                           image: DecorationImage(
                                               colorFilter: ColorFilter.mode(BLACK_COLOR.withOpacity(0.35), BlendMode.overlay),
-//                                              image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSgtTSEUFFEUqtzf_oun_Y2pbrpVvds4pVMsQ&usqp=CAU"),
                                               image: new NetworkImage(astuceSnap.data[index]['images'][0]),
                                               fit: BoxFit.cover
                                           )
@@ -213,7 +216,7 @@ class _HomeState extends State<Home> {
               return GestureDetector(
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context)=> TechnicianDetails(
-                    key: Key(index.toString()),
+                      key: Key(index.toString()),
                       id: techSnap.data[index]['_id'],
                       nbrOfCall: techSnap.data[index]['nbrOfCall'],
                       techPic: techSnap.data[index]['techPic'],
@@ -278,7 +281,7 @@ class _HomeState extends State<Home> {
 
                           SizedBox(
                             width: MediaQuery.of(context).size.width/4.2,
-                            child: Text(techSnap.data[index]['name']+" " +techSnap.data[index]['lastname'],
+                            child: Text(techSnap.data[index]['name']+" " + techSnap.data[index]['lastname'],
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
@@ -371,7 +374,7 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     // TODO: implement build
     /*get the size of the screen*/
     Size _screenSize = MediaQuery.of(context).size;
@@ -394,18 +397,37 @@ class _HomeState extends State<Home> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      SizedBox(
-                        height: 45,
-                        child: GestureDetector(
-                          child: Icon(Icons.more_vert, color: BLACK_DEGRADE_COLOR,size: 22,),
-                          onTap: (){},
-                        ),
-                      )
 
                     ],
                   )
                 ),
                 backgroundColor: WHITE_COLOR,
+                actionsIconTheme: IconThemeData.fallback(),
+                actions: <Widget>[
+                   PopupMenuButton(
+                    onSelected: (result) async{
+                        if (result == 1) {
+                          if(await isLogged){
+                            _logout();
+                          }else{
+                            
+                          }
+                        }
+                    },
+                    itemBuilder: (BuildContext context){
+                      return[
+                        PopupMenuItem(
+                          child: Text("A propos"),
+                          value: 0,
+                        ),
+                        PopupMenuItem(
+                          child:  Text("Se déconnecter"),
+                          value: 1,
+                        ),
+                      ];
+                    }
+                    )
+                ],
           ),
           body: ListView(
             scrollDirection: Axis.vertical,
@@ -534,6 +556,12 @@ class _HomeState extends State<Home> {
   @override
   void dispose(){
     super.dispose();
+  }
+
+  void _logout() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("token", null);
+      await prefs.setString("user", null);
   }
 
 }

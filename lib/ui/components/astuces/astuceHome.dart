@@ -147,7 +147,7 @@ class _AstuceHomeScreenState extends State<AstuceHomeScreen> with TickerProvider
                          Divider(color: WHITE_COLOR,)
                       ],
                     ),
-                    preferredSize: null
+                    preferredSize:  Size.fromHeight(15.0),
                 )
             ),
             preferredSize: Size.fromHeight(125.0), // here the desired height

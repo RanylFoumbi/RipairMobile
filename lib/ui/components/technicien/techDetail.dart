@@ -8,9 +8,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:oneHelp/apiCall/comment.dart';
 import 'package:oneHelp/apiCall/user.dart';
-import 'package:oneHelp/models/user.dart';
 import 'package:oneHelp/ui/components/auth/login.dart';
 import 'package:oneHelp/ui/globals/toast.dart';
+import 'package:oneHelp/utilities/auth.dart';
 import 'package:oneHelp/utilities/connectivity.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:rating_dialog/rating_dialog.dart';
@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:oneHelp/ui/globals/stringExtension.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class TechnicianDetails extends StatefulWidget{
 
@@ -68,19 +69,12 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
   @override
   void initState() {
     super.initState();
+    timeago.setLocaleMessages('fr', timeago.FrMessages());
     _controller = AnimationController(vsync: this, duration: _duration);
     setState(() {
       commentList = CommentApi().fetchComment(widget.id);
     });
 
-  }
-
-  Future<bool> _isLogged() async{
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-     if(prefs.getString('user') != null)
-      return true;
-     else
-      return false; 
   }
 
   Future _postComment(comment) async {
@@ -98,6 +92,10 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
           _commentController.text = '';
         });
       }catch(err){
+    _controller = AnimationController(vsync: this, duration: _duration);
+    setState(() {
+      commentList = CommentApi().fetchComment(widget.id);
+    });
         print(err);
         setState(() {
           _isPosting = false;
@@ -107,18 +105,21 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
   }
 
   void _validateCommentField()async{
+     SharedPreferences prefs = await SharedPreferences.getInstance();
     if(_commentController.text == ''){
       toast("Remplissez le champs svp!",Toast.LENGTH_LONG,ToastGravity.BOTTOM,Colors.red,Colors.white,15);
     }else{
-      var comment ={
-        "content": _commentController.text,
-        "authorId": "025698745",
-        "technicianId": widget.id
-      };
-      if(await _isLogged())
+      if(await isLogged){
+          var comment ={
+            "content": _commentController.text,
+            "authorId": jsonDecode(prefs.getString("user"))["email"],
+            "technicianId": widget.id
+          };
         _postComment(comment);
-      else
+      }
+      else{
         loginDialog(context);
+      }
       
     }
   }
@@ -135,8 +136,7 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
 
   void _initiateCall() async{
      SharedPreferences prefs = await SharedPreferences.getInstance();
-     final user =  jsonDecode(  prefs.getString("user")); ;
-     print(user['id']);
+     final user =  jsonDecode(prefs.getString("user"));
     if(await checkInternet() == true){
           setState(() {
             FlutterPhoneState.startPhoneCall(widget.phone[0]);
@@ -167,6 +167,10 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
     }else{
       toast("Verifier votre connection internet et reeessayé!",Toast.LENGTH_LONG,ToastGravity.BOTTOM,Colors.red,Colors.white,15);
     }
+    _controller = AnimationController(vsync: this, duration: _duration);
+    setState(() {
+      commentList = CommentApi().fetchComment(widget.id);
+    });
   }
 
   Future _rateTech(techId, star) async {
@@ -255,6 +259,10 @@ Widget _displayMulti(listItems){
                       Container(
                         width: double.infinity,
                         height: 400,
+                      // decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(10),
+                      //     border: Border.all(color: BLACK_DEGRADE_COLOR.withOpacity(0.2))
+                      // ),
                         child: Stack(
                           children: <Widget>[
                             Positioned(
@@ -405,7 +413,6 @@ Widget _displayMulti(listItems){
                                         Expanded(
                                           child: _displayMulti(widget.languages),
                                         )
-
                                       ],
                                     )
                                 )
@@ -441,7 +448,7 @@ Widget _displayMulti(listItems){
                                     alignment: Alignment.center,
                                   ),
                                   onTap: () async{
-                                    if(await _isLogged())
+                                    if(await isLogged)
                                        _initiateCall();
                                     else
                                       loginDialog(context);
@@ -485,12 +492,13 @@ Widget _displayMulti(listItems){
                                             height: 23,
                                             decoration: BoxDecoration(
                                               color: YELLOW_COLOR,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius: BorderRadius.circular(5),
                                               boxShadow: [
                                                 BoxShadow(
-                                                    offset: Offset(0, 3),
-                                                    blurRadius: 5,
-                                                    color: Colors.grey)
+                                                  offset: Offset(0, 3),
+                                                  blurRadius: 5,
+                                                  color: Colors.grey
+                                                )
                                               ],
                                             ),
                                             child: Text("Appréciez",
@@ -499,7 +507,7 @@ Widget _displayMulti(listItems){
                                             alignment: Alignment.center,
                                           ),
                                           onTap:()async{
-                                             if(await _isLogged())
+                                             if(await isLogged)
                                               _showRatingDialog();
                                             else
                                               loginDialog(context);
@@ -526,25 +534,21 @@ Widget _displayMulti(listItems){
                               margin: EdgeInsets.only(right: 20),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: BLACK_DEGRADE_COLOR.withOpacity(0.2))
+                                  // border: Border.all(color: BLACK_DEGRADE_COLOR.withOpacity(0.2))
                                 ),
                                 width: MediaQuery.of(context).size.width / 1.1,
                                 padding: EdgeInsets.all(10),
                                 child: new Scrollbar(
-                                    child:SingleChildScrollView(
-                                        child: Column(
+                                    child:Column(
                                             children: [
-                                              Text(widget.description,
+                                              Text("        "+widget.description,
                                                 style: TextStyle(fontSize: 14.0,),
                                                 textAlign: TextAlign.justify,
                                               )
                                             ],
                                     ),
-                                  )
                                 )
                             )
-
-
                           ],
                         )
                       ),
@@ -562,7 +566,7 @@ Widget _displayMulti(listItems){
                                 width: MediaQuery.of(context).size.width / 3,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderRadius: BorderRadius.circular(10.0),
                                   boxShadow: [
                                     BoxShadow(
                                         offset: Offset(0, 3),
@@ -701,67 +705,94 @@ Widget _displayMulti(listItems){
                                           pinned: true,
                                         ),
                                         (commentList.data.length == 0 || commentList.data == null)
-                                                                        ?
-                                                                           SliverList(
-                                                                              delegate: SliverChildBuilderDelegate(
-                                                                                    (context, idx) => Container(
-                                                                                  alignment: Alignment.center,
-                                                                                  padding: EdgeInsets.all(35),
-                                                                                  child: Text("Aucun commentaire."),
-                                                                                ),
-                                                                                childCount: 1,
-                                                                              ),
-                                                                            )
-                                                                        :
-                                                                           SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                                (context, idx) => ListTile(
-                                              leading: Container(
-                                                  width: 40,
-                                                  height: 40,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(50),
-                                                    child: Icon(FontAwesome.user_circle,size: 30,),
-                                                  )
-                                              ),
-                                              title: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    constraints: BoxConstraints(
-                                                        maxWidth: MediaQuery.of(context).size.width * .8),
-                                                    padding: const EdgeInsets.all(15.0),
-                                                    decoration: BoxDecoration(
-                                                      color: Color(0xfff9f9f9),
-                                                      borderRadius: BorderRadius.only(
-                                                        topRight: Radius.circular(25),
-                                                        bottomLeft: Radius.circular(25),
-                                                        bottomRight: Radius.circular(25),
-                                                      ),
-                                                    ),
-                                                    child: Text( commentList.data[idx]['content'],
-                                                      style: Theme.of(context).textTheme.body1.apply(
-                                                        color: Colors.black87,
-                                                      ),
-                                                    ),
-                                                  ),
+                                                                                                  ?
+                                                                                                    SliverList(
+                                                                                                        delegate: SliverChildBuilderDelegate(
+                                                                                                              (context, idx) => Container(
+                                                                                                            alignment: Alignment.center,
+                                                                                                            padding: EdgeInsets.all(35),
+                                                                                                            child: Text("Aucun commentaire."),
+                                                                                                          ),
+                                                                                                          childCount: 1,
+                                                                                                        ),
+                                                                                                      )
+                                                                                                  :
+                                                                                                    SliverList(
+                                                                                                        delegate: SliverChildBuilderDelegate(
+                                                                                                              (context, idx) =>  Container(
+                                                                                                                 width: double.infinity,
+                                                                                                                 margin: const EdgeInsets.symmetric(vertical: 4.0),
+                                                                                                                child: Row(
+                                                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                        children: <Widget>[
+                                                                                                                          Container(
+                                                                                                                              width: 40,
+                                                                                                                              height: 40,
+                                                                                                                              margin: EdgeInsets.only(left: 7),
+                                                                                                                              child: Icon(Icons.person,size:30,color: WHITE_COLOR,),
+                                                                                                                              decoration: BoxDecoration(
+                                                                                                                                color: BLUE_COLOR,
+                                                                                                                                borderRadius: BorderRadius.circular(5),
+                                                                                                                                border: Border.all(
+                                                                                                                                  color: WHITE_COLOR,
+                                                                                                                                  width: 0.5
+                                                                                                                                )
+                                                                                                                              ),
+                                                                                                                          ),
+                                                                                                                          SizedBox(width: 8,),
+                                                                                                                          Column(
+                                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                            children: [
+                                                                                                                              SizedBox(height: 2,),    
+                                                                                                                              Container(
+                                                                                                                                constraints: BoxConstraints(
+                                                                                                                                    maxWidth: MediaQuery.of(context).size.width * .8),
+                                                                                                                                padding: const EdgeInsets.all(5.0),
+                                                                                                                                decoration: BoxDecoration(
+                                                                                                                                  color: Color(0xfff9f9f9),
+                                                                                                                                  borderRadius: BorderRadius.only(
+                                                                                                                                    topLeft: Radius.circular(5),
+                                                                                                                                    topRight: Radius.circular(5),
+                                                                                                                                    bottomLeft: Radius.circular(5),
+                                                                                                                                    bottomRight: Radius.circular(5),
+                                                                                                                                  ),
+                                                                                                                                ),
+                                                                                                                                child: Column(
+                                                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                                                  children: <Widget>[
+                                                                                                                                     Text( commentList.data[idx]['authorId'],
+                                                                                                                                          style: TextStyle(
+                                                                                                                                            color: Colors.black,
+                                                                                                                                            fontWeight: FontWeight.bold
+                                                                                                                                          )
+                                                                                                                                      ),
+                                                                                                                                      Text( commentList.data[idx]['content'],
+                                                                                                                                          style: Theme.of(context).textTheme.body1.apply(
+                                                                                                                                            color: Colors.black87,
+                                                                                                                                          ),
+                                                                                                                                          textAlign: TextAlign.left,
+                                                                                                                                        ),
+                                                                                                                                  ],
+                                                                                                                                )
+                                                                                                                              ),
+                                                                                                                              SizedBox(height: 2,), 
+                                                                                                                              Text(timeago.format(DateTime.parse(commentList.data[idx]['date']), locale: 'fr'),
+                                                                                                                                style: TextStyle(
+                                                                                                                                    color: BLACK_DEGRADE_COLOR,
+                                                                                                                                    fontSize: 10
+                                                                                                                                ),
+                                                                                                                                textAlign: TextAlign.right,
+                                                                                                                              ),
 
-                                                  Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: Text(commentList.data[idx]['date'],
-                                                      style: TextStyle(
-                                                          color: BLACK_DEGRADE_COLOR,
-                                                          fontSize: 10
-                                                      ),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            childCount: commentList.data.length,
-                                          ),
-                                        )
+                                                                                                                                Divider(height: 1,color: BLACK_DEGRADE_COLOR)
+                                                                                                                            ],
+                                                                                                                          ),
+                                                                                                                    ],
+                                                                                                                  ),
+                                                                                                              ),
+                                                                                                          childCount: commentList.data.length,
+                                                                                                        ),
+                                                                                                      )
                                       ],
                                     );
                                    },

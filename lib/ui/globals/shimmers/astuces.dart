@@ -30,7 +30,7 @@ class AstuceShimmer extends StatelessWidget{
                 borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                 boxShadow: <BoxShadow>[
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.6),
+                    color: Colors.grey.withOpacity(0.2),
                     offset: const Offset(4, 4),
                     blurRadius: 16,
                   ),
@@ -51,7 +51,7 @@ class AstuceShimmer extends StatelessWidget{
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(topRight: Radius.circular(15),topLeft: Radius.circular(15)),
                                   gradient: LinearGradient(
-                                    colors: [Colors.black54, BLACK_COLOR.withOpacity(0)],
+                                    colors: [Colors.grey, BLACK_DEGRADE_COLOR.withOpacity(0)],
                                     begin: Alignment.bottomCenter,
                                     end: Alignment.topCenter,
                                   )
@@ -105,7 +105,7 @@ class AstuceShimmer extends StatelessWidget{
                                                       enabled: true,
                                                       child:Container(
                                                         height: 12,
-                                                        color: Colors.grey[100],
+                                                        color: Colors.grey,
                                                       ),
                                                     )
                                                 ),
@@ -151,7 +151,7 @@ class AstuceShimmer extends StatelessWidget{
                               enabled: true,
                               child:Container(
                                 height:25,
-                                decoration: BoxDecoration(color:  Colors.grey[100], borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color:  Colors.grey, borderRadius: BorderRadius.circular(10)),
                                 padding: EdgeInsets.all(7),
                               ),
                             )

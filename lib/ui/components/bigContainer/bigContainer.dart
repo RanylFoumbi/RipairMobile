@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:oneHelp/ui/components/Home/home.dart';
 import 'package:oneHelp/ui/components/astuces/astuceHome.dart';
-import 'package:oneHelp/ui/components/auth/login.dart';
 import 'package:oneHelp/ui/components/technicien/techList.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 
@@ -16,7 +14,7 @@ class _BigContainerState extends State<BigContainer> with SingleTickerProviderSt
 
   int _selectedIndex = 0;
   PageController _pageController;
-  List<Widget> _screenList = [Home(),TechList(),AstuceHomeScreen(),Login()];
+  List<Widget> _screenList = [Home(),TechList(),AstuceHomeScreen()];
 
 /*when init component*/
   @override
@@ -87,11 +85,11 @@ class _BigContainerState extends State<BigContainer> with SingleTickerProviderSt
             title: Text("Astuces"),
             activeIcon: Icon(Icons.update, size: 27, color: BLUE_COLOR),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb_outline, size: 27,),
-            title: Text("Profil"),
-            activeIcon: Icon(Icons.lightbulb_outline, size: 27, color: BLUE_COLOR),
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.lightbulb_outline, size: 27,),
+          //   title: Text("Profil"),
+          //   activeIcon: Icon(Icons.lightbulb_outline, size: 27, color: BLUE_COLOR),
+          // ),
         ],
       )
     );
