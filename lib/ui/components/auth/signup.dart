@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:oneHelp/ui/components/auth/login.dart';
 import 'package:oneHelp/utilities/constant/colors.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:http/http.dart' as http;
 import 'package:oneHelp/apiCall/user.dart';
-import 'dart:convert';
 
 class Signup extends StatefulWidget {
   @override
@@ -38,23 +37,60 @@ class _SignupState extends State<Signup> {
       return null;
   }
 
-  bool _isValidForm() {
-    return passwordController.text.length > 0 &&
-        _validateEmail(emailController.text) == null;
-  }
 
   // Redirect after login
   _redirect() {
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(true);
+    loginDialog(context);
   }
 
 
   // Called when user submit the form
   void _handleSubmit() {
     setState(() { _loading = true; });
+
     String email = emailController.text;
+    String name = nameController.text;
+    String phone = phoneController.text;
     String password = passwordController.text;
+
+    UserApi().signup(name, phone, email, password)
+        .then((response) {
+          if(response.statusCode == 200) {
+            _redirect();
+          } else if(response.statusCode == 401) {
+            _showDialog("Téléphone ou Mot de passe incorect.");
+          }
+          setState(() { _loading = false; });
+          // _showDialog(json.decode(response.body)["msg"]);
+        })
+        .catchError((onError) {
+          setState(() {_loading = false;});
+          _showDialog("Verifiez votre connexion internet. Puis réessayer.");
+        });
    
+  }
+
+   void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Auth Error"),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Fermer"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
    Future loginDialog(BuildContext context) async {
@@ -235,17 +271,15 @@ class _SignupState extends State<Signup> {
               
               SizedBox(height: 15),
               DialogButton(
-                color: BLUE_COLOR,
-                  onPressed: () {
-                     _formKey.currentState.validate();
-                        if (_isValidForm()) {
-                          // _handleSubmit();
-                        }
-                  },
-                  child: Text(
-                    "Créer un compte",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
+               color: !_loading ? BLUE_COLOR : Colors.grey,
+                  onPressed: () {  _handleSubmit(); },
+                  child:!_loading ? 
+                                  Text(
+                                    "Créer un Compte",
+                                    style: TextStyle(color: Colors.white, fontSize: 17),
+                                  )
+                                  :
+                                  SpinKitWave(color: WHITE_COLOR, size: 20,),
                 ),
 
               FlatButton(

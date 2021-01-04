@@ -8,8 +8,8 @@ import 'ui/globals/splashScreen.dart';
 void main() {
   /*To block Screen rotation for the whole app*/
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown,DeviceOrientation.portraitUp])
-      .then((_) {
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]).then((_) {
     runApp(new Main());
   });
 }
@@ -20,19 +20,15 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-          title: 'Ripair',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: SplashScreen(),
-          routes: <String, WidgetBuilder> {
-            '/home': (BuildContext context) => Home(),
-          },
+      title: 'Ripair',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => Home(),
+      },
     );
   }
 }
-
-
-
-

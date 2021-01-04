@@ -20,12 +20,23 @@ class UserApi{
   }
 
   // Login and Get the informations of the logged user
-  Future<http.Response> login(String email, String password) async{
-    var url = baseUrl + '/api/user/login';
+  Future<http.Response> loginEmail(String email, String password) async{
+    var url = baseUrl + '/api/user/loginWithEmail';
     var response = await http.post(url, 
     body: {
       'password': password, 
       'email': email
+    },);
+    return response;
+  }
+
+   // Login and Get the informations of the logged user
+  Future<http.Response> loginPhone(String phone, String password) async{
+    var url = baseUrl + '/api/user/loginWithPhone';
+    var response = await http.post(url, 
+    body: {
+      'password': password, 
+      'phone': phone
     },);
     return response;
   }

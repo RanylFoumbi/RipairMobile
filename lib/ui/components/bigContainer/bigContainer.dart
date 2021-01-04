@@ -39,19 +39,21 @@ class _BigContainerState extends State<BigContainer> with SingleTickerProviderSt
       backgroundColor: Colors.white,
       extendBody: true,
       extendBodyBehindAppBar: true,
-      body: Stack(
+      body: new Stack(
           children: <Widget>[
 
-            Container(
+           new Container(
               color: Colors.white,
               height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.only(bottom: 0),
-              child: PageView(
+              child:
+               new PageView(
                 children: _screenList,
                 controller: _pageController,
                 onPageChanged: (index) => setState(() {
                   _selectedIndex = index;
                 }),
+                // allowImplicitScrolling: true,
               ),
             ),
 

@@ -113,6 +113,7 @@ class _TechnicianDetailsState extends State<TechnicianDetails> with TickerProvid
           var comment ={
             "content": _commentController.text,
             "authorId": jsonDecode(prefs.getString("user"))["email"],
+            "authorName": jsonDecode(prefs.getString("user"))["name"],
             "technicianId": widget.id
           };
         _postComment(comment);
@@ -760,7 +761,7 @@ Widget _displayMulti(listItems){
                                                                                                                                 child: Column(
                                                                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                                                                   children: <Widget>[
-                                                                                                                                     Text( commentList.data[idx]['authorId'],
+                                                                                                                                     Text( commentList.data[idx]['authorName'],
                                                                                                                                           style: TextStyle(
                                                                                                                                             color: Colors.black,
                                                                                                                                             fontWeight: FontWeight.bold

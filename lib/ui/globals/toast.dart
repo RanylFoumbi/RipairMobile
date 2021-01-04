@@ -14,4 +14,24 @@ Future toast(String msg, Toast toastLength, ToastGravity gravity, Color backgrou
         fontSize: fontSize
     );
 }
+
+showAlertDialog(BuildContext context){
+  AlertDialog alert = AlertDialog(
+    content: new Row(
+        children: [
+           CircularProgressIndicator(),
+           Container(
+             margin: EdgeInsets.only(left: 15),
+             child:Text("Loading" )
+           ),
+        ],),
+  );
+  showDialog(
+    context:context,
+    barrierDismissible: false,
+    builder:(BuildContext context){
+      return alert;
+    },
+  );
+}
  
