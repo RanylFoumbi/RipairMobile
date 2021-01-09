@@ -20,8 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var location =
-      removeDiacritics(PermissionHandler().locationStorage.getItem("location"));
+  var location = PermissionHandler().locationStorage.getItem("location");
   ScrollController _scrollController = new ScrollController();
   bool isLogOut = false;
 

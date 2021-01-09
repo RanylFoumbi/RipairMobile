@@ -4,7 +4,6 @@ import 'package:geocoder/geocoder.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:location/location.dart';
 
-
 class PermissionHandler{
   LocationData currentLocation;
   String error;
@@ -20,7 +19,6 @@ class PermissionHandler{
   }
 
   Future<Address> getUserLocation() async {
-
     try {
       if (await location.serviceEnabled() == false) {
         location.requestService();
@@ -52,3 +50,5 @@ class PermissionHandler{
   }
 
 }
+
+

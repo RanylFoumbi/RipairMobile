@@ -30,7 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
     location.serviceEnabled().then((value) => {
           if (value == false) {location.requestService()}
         });
-
     _loadWidget();
   }
 
